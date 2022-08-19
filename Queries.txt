@@ -1,0 +1,46 @@
+/* Query 1 */
+SELECT m.Name Media_type, SUM(il.UnitPrice) TotalSales
+FROM MediaType m
+JOIN Track t
+ON m.MediaTypeId=t.MediaTypeId
+JOIN InvoiceLine il
+ON il.TrackId=t.TrackId
+GROUP BY 1
+ORDER BY 2 DESC;
+
+/* Query 2 */
+SELECT g.Name Genres, SUM(i.UnitPrice) total_amount_paid
+FROM Genre g
+JOIN Track t
+ON t.GenreId=g.GenreId
+JOIN InvoiceLine i
+ON i.TrackId=t.TrackId
+GROUP BY 1
+ORDER BY 2 DESC
+LIMIT 5;
+
+/* Query 3 */
+SELECT a.Name Rock_Artist, SUM(i.UnitPrice) Total_Sellings
+FROM Artist a
+JOIN Album al
+ON a.ArtistId=al.ArtistId
+JOIN Track t
+ON al.AlbumId=t.AlbumId
+JOIN InvoiceLine i
+ON i.TrackId=t.TrackId
+WHERE GenreId="1"
+GROUP BY 1
+ORDER BY 2 DESC
+LIMIT 10;
+
+/* Query 4 */
+WITH s AS(
+	SELECT i.CustomerId ID, i.BillingCountry Countries, SUM(i.Total) TotalSpent
+	FROM Invoice i
+	GROUP BY 1,2
+	)
+SELECT s.ID, s.Countries, MAX(s.TotalSpent) TotalSpent, c.FirstName , c.LastName
+FROM s
+JOIN Customer c
+ON s.ID=c.CustomerId
+GROUP BY 2;
